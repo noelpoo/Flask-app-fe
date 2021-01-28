@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="shortcut icon" type="image/png" href="/icon.png" />
+
+    <link
+      href="https://fonts.googleapis.com/css?family=Poppins:400,500,600&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="style.css" />
+    <title>Bankist</title>
+  </head>
+  <body>
+    <!-- TOP NAVIGATION -->
+    <nav>
+      <p class="welcome">Log in to add/delete items</p>
+
+      <form class="login">
+        <input
+          type="text"
+          placeholder="user"
+          class="login__input login__input--user"
+        />
+        <input
+          type="text"
+          placeholder="PIN"
+          maxlength="4"
+          class="login__input login__input--pin"
+        />
+        <button class="login__btn">&rarr;</button>
+        <!-- <button class="logout__btn">LOG OUT</button> -->
+      </form>
+    </nav>
+
+    <main class="app">
+      <!-- BALANCE -->
+      <div class="balance">
+        <div>
+          <p class="balance__label">Items</p>
+          <p class="balance__date">
+            As of <span class="date">05/03/2037</span>
+          </p>
+        </div>
+      </div>
+
+      <!-- MOVEMENTS -->
+      <div class="movements"></div>
+
+      <div class="summary">
+        <button class="btn--sort">&downarrow; SORT</button>
+      </div>
+
+      <div class="modal">
+        <button class="close-modal">&times;</button>
+        <h1>Search result</h1>
+        <p class="search__item__id"></p>
+        <p class="search__item__name"></p>
+        <p class="search__item__price"></p>
+        <p class="search__item__date"></p>
+      </div>
+      <div class="overlay"></div>
+
+      <!-- OPERATION: SEARCH BY NAME -->
+      <div class="operation operation--search">
+        <h2>Search for item by name</h2>
+        <form class="form form--search">
+          <input type="text" class="form__input form__input--item--search" />
+          <button class="form__btn form__btn--search">&rarr;</button>
+          <label class="form__label form__label--search">Item Name</label>
+        </form>
+      </div>
+
+      <!-- OPERATION: SEARCH BY ID -->
+      <div class="operation operation--search--id">
+        <h2>Search for item by item ID</h2>
+        <form class="form form--search--id">
+          <input
+            type="number"
+            class="form__input form__input--item--search--id"
+          />
+          <button class="form__btn form__btn--search--id">&rarr;</button>
+          <label class="form__label form__label--search--id">Item ID</label>
+        </form>
+      </div>
+
+      <!-- OPERATION: CLOSE -->
+      <div class="operation operation--add">
+        <h2>Add Item</h2>
+        <form class="form form--close">
+          <input type="text" class="form__input form__input--user" />
+          <input
+            type="text"
+            maxlength="20"
+            class="form__input form__input--pin"
+          />
+          <button class="form__btn form__btn--close">&rarr;</button>
+          <label class="form__label">Item Name</label>
+          <label class="form__label">Price</label>
+        </form>
+      </div>
+
+      <!-- OPERATION: LOAN -->
+      <div class="operation operation--delete">
+        <h2>Delete Item</h2>
+        <form class="form form--loan">
+          <input type="text" class="form__input form__input--delete" />
+          <button class="form__btn form__btn--delete">&rarr;</button>
+          <label class="form__label form__label--loan">Item</label>
+        </form>
+      </div>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
