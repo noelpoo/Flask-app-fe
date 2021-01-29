@@ -141,7 +141,7 @@ const login = function (user_name, pw) {
   request
     .then(function (response) {
       if (!response.ok) {
-        throw new Error(`login failed, code: ${response.status}`);
+        throw new Error(`invalid credentials, code: ${response.status}`);
       }
       return response.json();
     })
@@ -151,7 +151,8 @@ const login = function (user_name, pw) {
       addItemContainer.classList.remove("hidden");
       deleteItemContainer.classList.remove("hidden");
       console.log("login success");
-    });
+    })
+    .catch((err) => alert(err));
 };
 
 // main list module
