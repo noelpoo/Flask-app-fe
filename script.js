@@ -6,6 +6,8 @@ const post_item_url = "https://flaskapp.osc-fr1.scalingo.io/api/v1/item"; // log
 const auth_url = "https://flaskapp.osc-fr1.scalingo.io/api/v1/login";
 
 // DOM elements
+const containerLogin = document.querySelector(".login");
+const welcomeMessage = document.querySelector(".welcome");
 const containerMovements = document.querySelector(".movements");
 const currentDateEl = document.querySelector(".date");
 const addItemContainer = document.querySelector(".operation--add");
@@ -117,6 +119,7 @@ btnSearch.addEventListener("click", function (e) {
 
 // Credentials and login module
 let access_token = null;
+let isLoggedin = false;
 
 btnLogin.addEventListener("click", function (e) {
   e.preventDefault();
@@ -150,6 +153,9 @@ const login = function (user_name, pw) {
       access_token = data.access_token;
       addItemContainer.classList.remove("hidden");
       deleteItemContainer.classList.remove("hidden");
+      isLoggedin = true;
+      containerLogin.classList.add("hidden");
+      welcomeMessage.textContent = `Welcome! ${user_name}`;
       console.log("login success");
     })
     .catch((err) => alert(err));
