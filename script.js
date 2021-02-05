@@ -165,19 +165,24 @@ const login = function (user_name, pw) {
 let mainList = null;
 
 const getAllItems = function (sort = false) {
-  let sort_val = 0;
-  if (!sort) sort_val = 1;
+  const sort_val = !sort ? 1 : 0;
   const request = fetch(
     `https://flaskapp.osc-fr1.scalingo.io/api/v1/items?sort=${sort_val}`
   );
   request
-    .then((response) => response.json())
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`failed to get items! ${response.status}`);
+      }
+      return response.json();
+    })
     .then(function (resp_json) {
       const data = resp_json;
       mainList = data.items;
       console.log(mainList);
       renderItems(mainList);
-    });
+    })
+    .catch((err) => alert(err));
 };
 
 const refreshMainList = function (sort = false) {
