@@ -244,7 +244,7 @@ btnAddItem.addEventListener("click", function (e) {
   const name = inputItemName.value;
   const price = inputItemPrice.value;
   if (!name || !price) return;
-  addItem(name, price);
+  addItem(name.toLowerCase(), price);
 });
 
 // deleting item
