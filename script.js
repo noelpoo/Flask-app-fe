@@ -165,7 +165,7 @@ const login = function (user_name, pw) {
 let mainList = null;
 
 const getAllItems = function (sort = false) {
-  const sort_val = !sort ? 1 : 0;
+  const sort_val = !sort ? 0 : 1;
   const request = fetch(
     `https://flaskapp.osc-fr1.scalingo.io/api/v1/items?sort=${sort_val}`
   );
@@ -201,7 +201,7 @@ const renderItems = function (item_list) {
         <div class="movements__value">$${item.price}</div>
     </div>
   `;
-    containerMovements.insertAdjacentHTML("afterbegin", html);
+    containerMovements.insertAdjacentHTML("beforeend", html);
   });
 };
 
