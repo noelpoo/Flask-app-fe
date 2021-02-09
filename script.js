@@ -114,7 +114,7 @@ const searchItem = function (item_name) {
 
 btnSearch.addEventListener("click", function (e) {
   e.preventDefault();
-  searchItem(inputSearch.value);
+  searchItem(inputSearch.value.toLowerCase());
 });
 
 // Credentials and login module
