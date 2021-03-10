@@ -38,6 +38,7 @@
 
     <main class="app">
       <!-- BALANCE -->
+
       <div class="balance">
         <div>
           <p class="balance__label">Items</p>
@@ -51,6 +52,16 @@
       <div class="movements"></div>
 
       <div class="summary">
+        <h2 class="currency_selector_label">select currency</h2>
+        <div class="currency_selector_box">
+          <select class="currency_selector">
+            <option name="option1" value="USD">USD</option>
+            <option name="option2" value="SGD">SGD</option>
+            <option name="option3" value="AUD">AUD</option>
+            <option name="option4" value="CAD">CAD</option>
+            <option name="option5" value="MYR">MYR</option>
+          </select>
+        </div>
         <button class="btn--sort">&downarrow; SORT</button>
       </div>
 
@@ -115,5 +126,6 @@
     </main>
 
     <script src="script.js"></script>
+    <script type="module" src="config.js"></script>
   </body>
 </html>
