@@ -123,6 +123,17 @@ nav {
   font-weight: 400;
 }
 
+/* CURRENCY SELECTOR */
+.currency_selector_box {
+  width: 100px;
+  height: 50px;
+  padding: 0px;
+}
+
+.currency_selector_label {
+  padding: 1rem;
+}
+
 /* MOVEMENTS */
 .movements {
   grid-row: 2 / span 3;
@@ -183,8 +194,8 @@ nav {
   grid-row: 5 / 6;
   display: flex;
   align-items: baseline;
-  padding: 0 0.3rem;
-  margin-top: 1rem;
+  padding: 0rem;
+  margin-top: 0px;
 }
 
 .summary__label {

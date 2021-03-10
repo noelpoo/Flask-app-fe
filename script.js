@@ -1,9 +1,27 @@
 "use strict";
 
-const host_url = '"https://flaskapp.osc-fr1.scalingo.io';
-const get_all_url = "https://flaskapp.osc-fr1.scalingo.io/api/v1/items?sort=1";
-const post_item_url = "https://flaskapp.osc-fr1.scalingo.io/api/v1/item"; // login required
-const auth_url = "https://flaskapp.osc-fr1.scalingo.io/api/v1/login";
+// ENV CONFIG
+const env = "local";
+const app_id = "825efb56a4174364aa523bcb0c8981fe";
+
+let api_endpoint;
+switch (env) {
+  case "live":
+    api_endpoint = "https://flaskapp.osc-fr1.scalingo.io";
+    break;
+  case "local":
+    api_endpoint = "http://0.0.0.0:5000";
+    break;
+  default:
+    api_endpoint = "http://0.0.0.0:5000";
+    break;
+}
+
+// const host_url = "https://flaskapp.osc-fr1.scalingo.io";
+// const get_all_url = "https://flaskapp.osc-fr1.scalingo.io/api/v1/items?sort=1";
+const post_item_url = `${api_endpoint}/api/v1/item`; // login required
+const auth_url = `${api_endpoint}/api/v1/login`;
+const exchange_rate_url = `https://openexchangerates.org/api/latest.json?app_id=${app_id}`;
 
 // DOM elements
 const containerLogin = document.querySelector(".login");
@@ -35,11 +53,11 @@ const windowItemPrice = document.querySelector(".search__item__price");
 const windowItemDate = document.querySelector(".search__item__date");
 const windowItemID = document.querySelector(".search__item__id");
 
+const currency_selector = document.querySelector(".currency_selector");
+
 // search by ID module
 const searchItemID = function (id) {
-  const request = fetch(
-    `https://flaskapp.osc-fr1.scalingo.io/api/v1/item_id?id=${id}`
-  );
+  const request = fetch(`${api_endpoint}/api/v1/item_id?id=${id}`);
   request
     .then(function (response) {
       if (!response.ok) {
@@ -78,9 +96,7 @@ btnSearchID.addEventListener("click", function (e) {
 
 // search by name module
 const searchItem = function (item_name) {
-  const request = fetch(
-    `https://flaskapp.osc-fr1.scalingo.io/api/v1/item?name=${item_name}`
-  );
+  const request = fetch(`${api_endpoint}/api/v1/item?name=${item_name}`);
   request
     .then(function (response) {
       if (!response.ok) {
@@ -165,10 +181,8 @@ const login = function (user_name, pw) {
 let mainList = null;
 
 const getAllItems = function (sort = false) {
-  const sort_val = !sort ? 1 : 0;
-  const request = fetch(
-    `https://flaskapp.osc-fr1.scalingo.io/api/v1/items?sort=${sort_val}`
-  );
+  const sort_val = !sort ? 0 : 1;
+  const request = fetch(`${api_endpoint}/api/v1/items?sort=${sort_val}`);
   request
     .then((response) => {
       if (!response.ok) {
@@ -198,10 +212,12 @@ const renderItems = function (item_list) {
       item.name
     }</div>
         <div class="movements__time">${timeConverter(item.create_time)}</div>
-        <div class="movements__value">$${item.price}</div>
+        <div class="movements__value">${(item.price * exchange_rate).toFixed(
+          2
+        )} ${currency_selector.value}</div>
     </div>
   `;
-    containerMovements.insertAdjacentHTML("afterbegin", html);
+    containerMovements.insertAdjacentHTML("beforeend", html);
   });
 };
 
@@ -218,7 +234,7 @@ const addItem = function (item_name, item_price) {
     },
     body: JSON.stringify({
       name: item_name,
-      price: item_price,
+      price: parseFloat(item_price),
     }),
   });
   request
@@ -249,15 +265,12 @@ btnAddItem.addEventListener("click", function (e) {
 
 // deleting item
 const deleteItem = function (item_name) {
-  const request = fetch(
-    `https://flaskapp.osc-fr1.scalingo.io/api/v1/item?name=${item_name}`,
-    {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${access_token}`,
-      },
-    }
-  );
+  const request = fetch(`${api_endpoint}/api/v1/item?name=${item_name}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${access_token}`,
+    },
+  });
   request
     .then(function (response) {
       if (!response.ok) {
@@ -284,6 +297,7 @@ btnSort.addEventListener("click", function (e) {
   e.preventDefault();
   refreshMainList(!sort_val);
   sort_val = !sort_val;
+  console.log(exchangeRates);
 });
 
 const getCurrentDate = function () {
@@ -333,11 +347,58 @@ const showModalWindow = function (yes) {
   }
 };
 
+let exchange_rate = 1;
+let exchangeRates = {};
+
+currency_selector.addEventListener("change", (e) => {
+  e.preventDefault();
+  setExchangeRate();
+  refreshMainList();
+  console.log("currency: ", currency_selector.value);
+  console.log("exchange rate:", exchange_rate);
+});
+
+const setExchangeRate = function () {
+  for (let i = 0; i < exchangeRates.rates.length; i++) {
+    if (exchangeRates.rates[i].symbol === currency_selector.value) {
+      exchange_rate = exchangeRates.rates[i].rate;
+    }
+  }
+};
+
+const getExchangeRate = function () {
+  const request = fetch(exchange_rate_url);
+  request
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`failed to fetch exchange rates, ${response.status}`);
+      }
+      return response.json();
+    })
+    .then((resp_json) => {
+      exchangeRates = {
+        time_stamp: resp_json.timestamp,
+        rates: [
+          { symbol: "USD", rate: resp_json.rates.USD },
+          { symbol: "SGD", rate: resp_json.rates.SGD },
+          { symbol: "AUD", rate: resp_json.rates.AUD },
+          { symbol: "CAD", rate: resp_json.rates.CAD },
+          { symbol: "MYR", rate: resp_json.rates.MYR },
+        ],
+      };
+    })
+    .then(() => console.log(exchangeRates))
+    .catch((err) => {
+      alert(err);
+    });
+};
+
 const init = function () {
   currentDateEl.textContent = getCurrentDate();
   addItemContainer.classList.add("hidden");
   deleteItemContainer.classList.add("hidden");
   showModalWindow(false);
+  getExchangeRate();
   getAllItems();
 };
 
